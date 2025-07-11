@@ -1,0 +1,18 @@
+local HiddenGui = get_hidden_gui and get_hidden_gui() or gethui and gethui()
+local CG = game:GetService("CoreGui")
+
+local function DisableHTTPSPY()
+  if HiddenGui then
+    local HttpSpyGuis = HiddenGui:FindFirstChild("ReGui") or CG:FindFirstChild("HttpSpyGui")
+    if HttpSpyGuis then
+      HttpSpyGuis:Destroy()
+    end
+  end
+end
+
+task.spawn(function()
+while true do
+  DisableHTTPSPY()
+  task.wait(0.001)
+end
+end)
