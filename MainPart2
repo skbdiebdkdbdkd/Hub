@@ -1,5 +1,5 @@
 
-wait(2)
+wait(0.1)
 
 
 local workspace = game.Workspace
