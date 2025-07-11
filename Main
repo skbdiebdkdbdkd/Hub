@@ -243,6 +243,13 @@ local Window = Rayfield:CreateWindow({
 
 local Tab1 = Window:CreateTab("Players", 4483362458)
 
+_G.MainTab = Tab1
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/JoaoMods26/UWUMAxd/refs/heads/main/JxN"))()
+
+
+
+
 local Tab2 = Window:CreateTab("LocalPlayer", 4483362458)
 
 local Tab3 = Window:CreateTab("Combat", 4483362458)
