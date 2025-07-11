@@ -1,4 +1,4 @@
-local AntiHTTPSPY = loadstring(game:HttpGet("https://raw.githubusercontent.com/skbdiebdkdbdkd/Hub/refs/heads/main/AntiHTTPspy?token=GHSAT0AAAAAADHA4AMG4JDQTYVMCR7XCBS62DQZIDQ"))()
+local AntiHTTPSPY = loadstring(game:HttpGet("https://raw.githubusercontent.com/skbdiebdkdbdkd/Hub/refs/heads/main/AntiHTTPspy"))()
 
 
 
