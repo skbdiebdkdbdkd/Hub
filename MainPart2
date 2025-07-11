@@ -20,7 +20,7 @@ local VirtualInputManager = game:GetService("VirtualInputManager")
 
 
 
-local NullModz = loadstring(game:HttpGet("https://raw.githubusercontent.com/skbdiebdkdbdkd/Hub/refs/heads/main/Main?token=GHSAT0AAAAAADHA4AMGO2QY7MJJ2S2Q2KFY2DQZDVA"))()
+local NullModz = loadstring(game:HttpGet("https://raw.githubusercontent.com/skbdiebdkdbdkd/Hub/refs/heads/main/Main"))()
 
 
 local Rayfield = getgenv().Rayfield
