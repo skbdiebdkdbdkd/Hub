@@ -1,3 +1,7 @@
+local AntiHTTPSPY = loadstring(game:HttpGet(""))()
+
+
+
 
 local workspace = game.Workspace
 local iluminacion = game:GetService("Lighting")
