@@ -114,6 +114,31 @@ local function PlayScriptAnimation(Name,paused,time,speed)
   end
 end
 
+local function PlayAnimationWithId(Id)
+  local AnimationId = Id
+  if AnimationId then
+    local Animator = GetAnimator()
+    if Animator then
+      local Animation = Instance.new("Animation")
+      Animation.AnimationId = "rbxassetid://".. AnimationId
+      
+      if currentTrack then
+        currentTrack:Stop()
+        currentTrack = nil
+      end
+      
+      currentTrack = Animator:LoadAnimation(Animation)
+      currentTrack:Play()
+      if paused then
+        currentTrack:AdjustSpeed(0)
+        currentTrack.TimePosition = time
+      end
+      currentTrack:AdjustSpeed(speed)
+      currentTrack.TimePosition = time
+    end
+  end
+end
+
 local VectorHuge = Vector3.new(math.huge,math.huge,math.huge)
 
 --//Options Functions
@@ -465,6 +490,13 @@ local Window = Library:CreateWindow({
 local PrincipalTab = Window:CreateTab("Troll")
 local PrincipalSection = PrincipalTab:CreateSection("Options")
 
+local EmotesTab = Window:CreateTab("Emotes")
+local EmotesSection = EmotesTab:CreateSection("Options")
+
+
+
+--//Tab1
+
 PrincipalTab:CreateInput({
     Name = "Nombre del Jugador Objetivo",
     PlaceholderText = "Escribe un nombre...",
@@ -561,3 +593,234 @@ PrincipalTab:CreateToggle({
         end
     end
 })
+
+
+--//Tab2
+
+local EmotesApi = {
+    ["sexy Dancing 1 [CHANNELS]"] = "136494657202841",
+    ["sexy circle"] = "107862849749608",
+    ["sexy Circle2"] = "122817909413078",
+    ["Thanos sexy"] = "125196131087705",
+    ["Zero One"] = "86729901860126",
+    ["AronaDance"] = "112176404394603",
+    ["RAMBUNK"] = "129991743366120",
+    ["Gangnam Style"] = "100531289776679",
+    ["Vogue Dip"] = "136209625294516",
+    ["Vogue Dip2"] = "84293197900049",
+    ["caramell"] = "88315693621494",
+    ["PARROT DANCE"] = "101810746304426",
+    ["Michael Myers Shake Dance"] = "72760257419927",
+    ["Sway Sway Done"] = "94487045794016",
+    ["Spinning Cat 2"] = "135311171741053",
+    ["yesss"] = "99195149999804",
+    ["Jason Vorhees"] = "87282442358351",
+    ["Imported Animation Clip"] = "129029783290578",
+    ["Dance"] = "92246757633675",
+    ["jenny dance"] = "132682262315910",
+    ["Flotando"] = "74473837890133",
+    ["tuff3"] = "88130117312312",
+    ["Gmod Crowbar"] = "101197238583271",
+    ["jumping spider1"] = "139310328821985",
+    ["Invicible 2.0"] = "133065255614582",
+    ["Begging"] = "78443421035837",
+    ["Beg!"] = "85478341360173",
+    ["KeyframeSequence_1 [CHANNELS]"] = "96486379762750",
+    ["Dance J 2"] = "79775570690760",
+    ["kitty pose"] = "94067170508495",
+    ["crashout"] = "128849219187466",
+    ["Spooky Month!!!"] = "74986450260207",
+    ["Exploiter Fly"] = "110554468102798",
+    ["Small fry"] = "126277634736752",
+    ["Broke"] = "83400825948529",
+    ["VectorDance"] = "120847326101435",
+    ["RAGDOLL"] = "131094344161520",
+    ["catpose"] = "99613351055051",
+    ["go mufasa [CHANNELS]"] = "100900202556001",
+    ["Tailsfly [CHANNELS]"] = "81072957209141",
+    ["Wild Take [CHANNELS]"] = "139133554389178",
+    ["in"] = "100203839720961",
+    ["raro"] = "113141287442492",
+    ["Hakari dante"] = "72074113792421",
+    ["me cai"] = "90518809140968",
+    ["apenado"] = "117394346715743",
+    ["test"] = "124371366634097",
+    ["head spint 6"] = "124522818196151",
+    ["Orange Justice"] = "78927657777256",
+    ["Moon test 7"] = "112089880074848",
+    ["Saludo"] = "77304386644418",
+    ["Confess Dance"] = "109585388574936",
+    ["SUKUNA"] = "98352002677627",
+    ["Big Cuckoo Hand Gesture"] = "102163171245033",
+    ["Tyla Dance"] = "111754856931573",
+    ["KATSEYE - Better in Denim"] = "96401031029829",
+    ["Run away"] = "104428851742579",
+    ["KeyF"] = "73614993133405",
+    ["Gnarly Megans Part (OMG)"] = "87770193819742",
+    ["popp"] = "96147994216119",
+    ["ou"] = "102261822449497",
+    ["Run Around [CHANNELS]"] = "138476169783496",
+    ["Dougie Dance"] = "87574738912971",
+    ["yesyeye"] = "137173644717027",
+    ["ninjav3"] = "130296992484603",
+    ["Shimmer"] = "88544397320961",
+    ["backflip2"] = "73285810085559",
+    ["worm"] = "100145081450412",
+    ["Dog"] = "123646621028812",
+    ["muelto"] = "112210447586407",
+    ["Sit Up"] = "112474404942850",
+    ["Gusano"] = "140666916022488",
+    ["t"] = "120983791067599",
+    ["Folding"] = "135754787958762",
+    ["supercharge"] = "10478338114",
+    ["gabriella (Emote+Curves)"] = "110015296997192",
+    ["Heart Girl Pose [CHANNELS]"] = "110593935102863",
+    ["Crabby [CHANNELS]"] = "71361544917662",
+    ["Torture dance [CHANNELS]"] = "100784037937970",
+    ["SMILE R15"] = "125481790936614",
+    ["Head emoting"] = "106122874772851",
+    ["Spiderman test [CHANNELS]"] = "88841065236214",
+    ["4patas"] = "119713273987479",
+    ["Wally West Run #9 [CHANNELS]"] = "121350640829746",
+    ["Take The L [CHANNELS]"] = "107795487146601",
+    ["Xavier 2"] = "90802740360125",
+    ["Rat Dance"] = "101765102432220",
+    ["biblically accurate emote"] = "109873544976020",
+    ["DIE LIT"] = "100114227897992",
+    ["Nyan Nyan 2.5"] = "108025254624123",
+    ["Territory"] = "139523350748401",
+    ["Skibidi ah"] = "127154705636043",
+    ["Robloshift_Linear3"] = "83985581576811",
+    ["Floating on the clouds"] = "77840765435893",
+    ["KeyframeSequence"] = "70998044792414",
+    ["Anime [CHANNELS]"] = "132491358825547",
+    ["cat dance AI"] = "121694328158425",
+    ["Final Penguin Dance"] = "127176687636448",
+    ["BlockyKick Dance"] = "73185821232627",
+    ["Virtual Singer Dance"] = "109624434526908",
+    ["Dan 15"] = "87518943701472",
+    ["addender"] = "121924019901219",
+    ["proxima creature test"] = "87025086742503",
+    ["Headbanguing!"] = "135611169366768",
+    ["Ballroom Dance"] = "117124502867791",
+    ["Cute"] = "80754582835479",
+    ["Cute Sit [CHANNELS]"] = "130995344283026",
+    ["Cinema2"] = "118439181959068",
+    ["Griddy"] = "127549025227270",
+    ["finalboss"] = "90916569257058",
+    ["Ragdoll [CHANNELS]"] = "133473398698729",
+    ["GonIdle [CHANNELS]"] = "136678571910037",
+    ["Beggar"] = "73867012166933",
+    ["FinalV1Obby"] = "115569573258316",
+    ["Aura Rng FLY"] = "89523370947906",
+    ["Automatic Save [CHANNELS] 2"] = "118235512746687",
+    ["Chill Pose"] = "78848614632586",
+    ["Master Test"] = "99665733544814",
+    ["BABY 2.0 [CHANNELS]"] = "105029646360255",
+    ["zenitsu [CHANNELS]"] = "85404144248093",
+    ["laugh2 ugc"] = "83998626274040",
+    ["think"] = "90921576380654",
+    ["THey Dont love u like i do"] = "128417577584826",
+    ["fan"] = "89081577915234",
+    ["Locked dance"] = "72038896628773",
+    ["Hakari"] = "86711105179267",
+    ["How a Creeper Walks"] = "95100183251326",
+    ["Gojo Pose"] = "77604955503222",
+    ["Cat Pose"] = "101538802180310",
+    ["Wally West"] = "135579638960045",
+    ["Dance [CHANNELS]"] = "124532423933420",
+    ["Soda Pop"] = "102587792316374",
+    ["Best mates [CHANNELS]"] = "84593940203186",
+    ["garou [CHANNELS]"] = "91384052838765",
+    ["shadow stand guy aura pose"] = "130399440456166",
+    ["golden freddy glitch emote"] = "139844366194867",
+    ["Heartthrob"] = "80120791952773",
+    ["Egoist Demon King Celebration"] = "75452963608367",
+    ["Lethal Shimmy R15 [CHANNELS]"] = "140332043624822",
+    ["At Ease New v1"] = "134615697400964",
+    ["Conga_UGC"] = "86767876779723",
+    ["float spin 2"] = "111251252458517",
+    ["Automatic Save"] = "122951149300674",
+    ["AuraFarming"] = "72074117297678",
+    ["ROBLOX PLEASEEE"] = "138657560057987",
+    ["TV Time Dance"] = "79656659306355",
+    ["R15 Default Danceaaaa"] = "101011728520473",
+    ["please please please"] = "101192771739207",
+    ["Family Man's Death Pose"] = "107811646240108",
+    ["Automatic Save 3"] = "113181071290859",
+    ["INSANITY"] = "126116342100582",
+    ["Sukuna Sit Animation"] = "118485763841250",
+    ["Dropper2"] = "116039975531632",
+    ["Be Not Afraid 2"] = "115474307862803",
+    ["Macarena Dance 2"] = "91047682123297",
+    ["Helicopter [CHANNELS]"] = "95301257497525",
+    ["RONALDO"] = "121011917367171",
+    ["do that thang real"] = "115604832460182",
+    ["SquatGrass"] = "71239877423795",
+    ["r15 [CHANNELS]"] = "74288964113793"
+}
+
+local EmotesName = {}
+for n, _ in pairs(EmotesApi) do
+  table.insert(EmotesName,n)
+end
+
+EmotesTab:CreateDropdown({
+    Name = "Seleccionar emote",
+    Options = EmotesName,
+    Callback = function(option)
+      local id = EmotesApi[option]
+      Notify("Emotes","Seleccionaste el emote: "..option,1)
+      PlayAnimationWithId(id)
+    end
+})
+
+local Stoped = false
+local SpeedValue = 1
+
+EmotesTab:CreateSlider({
+    Name = "Emote Speed",
+    Range = {0, 5},
+    Increment = 0.1,
+    Suffix = "Speed/s",
+    CurrentValue = 1,
+    Callback = function(value)
+        if currentTrack then
+          currentTrack:AdjustSpeed(value)
+          Notify("Emotes","Emote speed establecida en: "..value)
+          SpeedValue = value
+        end
+    end
+})
+
+EmotesTab:CreateToggle({
+    Name = "Pause Emote",
+    CurrentValue = false, --- Valor inicial
+    Callback = function(state)
+        if state then
+            if currentTrack then
+              currentTrack:Stop()
+              Stoped = true
+              Name = "Play Emote"
+            end
+        else
+            if currentTrack then
+              Stoped = false
+              currentTrack:Play()
+              Name = "Pause Emote"
+            end
+        end
+    end
+})
+
+
+RunService.Heartbeat:Connect(function()
+  if not BangStatus and not FaceBangStatus and not GetBangStatus and not GetBangTwoStatus and not SuckStatus then
+    if currentTrack then
+      if Stoped then
+        currentTrack:Stop()
+      end
+      currentTrack:AdjustSpeed(SpeedValue)
+    end
+end
+end)
