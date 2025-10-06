@@ -1,0 +1,563 @@
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+
+
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/pruebasjoao/test/refs/heads/main/JmodsLibV1.0'))()
+
+
+--//Global Functions
+local Players = game:GetService("Players")
+
+local function GetPlayerFromPartialName(name)
+	local name = tostring(name):lower()
+	for _, p in ipairs(Players:GetPlayers()) do
+	  local pchar = p.Character
+	  if pchar then
+	    local ph = pchar:FindFirstChild("Humanoid")
+	    if ph then
+		if p.Name:lower():find(name) or ph.DisplayName:lower():find(name) then
+			return p
+		end
+	    end
+  end
+end
+	return nil
+end
+
+local function GetCharacter()
+  local char = Player.Character
+  if char then
+    return char
+  end
+  return nil
+end
+
+local function GetCharacterInstance(InstanceName)
+  local char = GetCharacter()
+  if char then
+    for _, i in ipairs(char:GetDescendants()) do
+      if i.Name == InstanceName then
+        return i
+      end
+    end
+  end
+  return nil
+end
+
+local function GetOthersCharacterInstance(P,InstanceName)
+  local char = P.Character
+  if char then
+    for _, i in ipairs(char:GetDescendants()) do
+      if i.Name == InstanceName then
+        return i
+      end
+    end
+  end
+  return nil
+end
+
+local function Notify(Titlee,Contentt,Durationn)
+Library:Notify({
+    Title = Titlee,
+    Content = Contentt,
+    Duration = Durationn
+})
+end
+
+local function GetAnimator()
+  local humanoid = GetCharacterInstance("Humanoid")
+  if humanoid then
+    local Animator = humanoid:FindFirstChildOfClass("Animator")
+    if Animator then
+      return Animator
+    end
+    Animator = Instance.new("Animator")
+    Animator.Parent = humanoid
+    return Animator
+  end
+  return nil
+end
+
+local ScriptAnimations = {
+  ["Bang"] = "rbxassetid://93640585529913",
+  ["GetBang"] = "rbxassetid://84043419466723",
+  ["GetBangTwo"] = "rbxassetid://97183040910882",
+  ["Suck"] = "rbxassetid://132982240547208"
+}
+
+local currentTrack = nil
+
+local function PlayScriptAnimation(Name,paused,time,speed)
+  local AnimationId = ScriptAnimations[Name]
+  if AnimationId then
+    local Animator = GetAnimator()
+    if Animator then
+      local Animation = Instance.new("Animation")
+      Animation.AnimationId = AnimationId
+      
+      if currentTrack then
+        currentTrack:Stop()
+        currentTrack = nil
+      end
+      
+      currentTrack = Animator:LoadAnimation(Animation)
+      currentTrack:Play()
+      if paused then
+        currentTrack:AdjustSpeed(0)
+        currentTrack.TimePosition = time
+      end
+      currentTrack:AdjustSpeed(speed)
+      currentTrack.TimePosition = time
+    end
+  end
+end
+
+local VectorHuge = Vector3.new(math.huge,math.huge,math.huge)
+
+--//Options Functions
+
+local Objetivo = nil
+
+local function Fling()
+  if Objetivo then
+  local MyHumanoidRootPart = GetCharacterInstance("HumanoidRootPart")
+  local ObjetivoHumanoidRootPart = GetOthersCharacterInstance(Objetivo,"HumanoidRootPart")
+  local ObjetivoHumanoid = GetOthersCharacterInstance(Objetivo,"Humanoid")
+  local MyHumanoid = GetCharacterInstance("Humanoid")
+  if MyHumanoidRootPart and ObjetivoHumanoidRootPart and ObjetivoHumanoid and MyHumanoid then
+    local SavedPos = MyHumanoidRootPart.CFrame
+    
+    if not MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+    local AntiFallDamageBV = Instance.new("BodyVelocity")
+    AntiFallDamageBV.Velocity = Vector3.zero
+    AntiFallDamageBV.Name = "AntiFallDamageBV"
+    AntiFallDamageBV.MaxForce = VectorHuge
+    AntiFallDamageBV.Parent = MyHumanoidRootPart
+    end
+    for i = 1,50,1 do
+      local ObjetivoMoveDir = ObjetivoHumanoid.MoveDirection
+      ObjetivoHumanoidRootPart = GetOthersCharacterInstance(Objetivo,"HumanoidRootPart")
+      if MyHumanoidRootPart and ObjetivoHumanoidRootPart then
+        MyHumanoidRootPart.AssemblyAngularVelocity = Vector3.new(0,11000,0)
+        MyHumanoidRootPart.CFrame = ObjetivoHumanoidRootPart.CFrame * CFrame.new(0,0.5,0) + ObjetivoMoveDir * 10
+        MyHumanoidRootPart.CFrame = MyHumanoidRootPart.CFrame * CFrame.Angles(math.random(-360,360),math.random(-360,360),math.random(-360,360))
+      end
+      task.wait(0.01)
+    end
+    for i = 1,25,1 do
+      if MyHumanoidRootPart then
+        MyHumanoidRootPart.AssemblyAngularVelocity = Vector3.zero
+        MyHumanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+        MyHumanoidRootPart.Velocity = Vector3.zero
+        MyHumanoidRootPart.CFrame = SavedPos
+        MyHumanoid.PlatformStand = false
+      end
+      task.wait(0.01)
+    end
+    if MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+      MyHumanoidRootPart.AntiFallDamageBV:Destroy()
+    end
+  end
+  end
+end
+
+local function Teleport()
+  if Objetivo then
+    local ObjetivoHumanoidRootPart = GetOthersCharacterInstance(Objetivo,"HumanoidRootPart")
+    local MyHumanoidRootPart = GetCharacterInstance("HumanoidRootPart")
+    if MyHumanoidRootPart and ObjetivoHumanoidRootPart then
+      MyHumanoidRootPart.CFrame = ObjetivoHumanoidRootPart.CFrame * CFrame.new(0,3,0)
+    end
+  end
+end
+
+local BangStatus = false
+
+local function Bang()
+if not BangStatus then
+  BangStatus = true
+  PlayScriptAnimation("Bang",true,1,0)
+for i = 1,9999999,1 do
+  if Objetivo then
+  local MyHumanoidRootPart = GetCharacterInstance("HumanoidRootPart")
+  local ObjetivoHumanoidRootPart = GetOthersCharacterInstance(Objetivo,"HumanoidRootPart")
+  if MyHumanoidRootPart and ObjetivoHumanoidRootPart then
+    if not BangStatus then
+    if MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+      MyHumanoidRootPart.AntiFallDamageBV:Destroy()
+    end
+    if currentTrack then
+      currentTrack:Stop()
+      currentTrack = nil
+    end
+    break
+    end
+    if not MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+    local AntiFallDamageBV = Instance.new("BodyVelocity")
+    AntiFallDamageBV.Velocity = Vector3.zero
+    AntiFallDamageBV.Name = "AntiFallDamageBV"
+    AntiFallDamageBV.MaxForce = VectorHuge
+    AntiFallDamageBV.Parent = MyHumanoidRootPart
+    end
+    for i = 1,5,1 do
+    MyHumanoidRootPart.CFrame =      ObjetivoHumanoidRootPart.CFrame * CFrame.new(0,0.5,i)
+    task.wait(0.01)   
+    end
+    for i = 4,1,-1 do
+      MyHumanoidRootPart.CFrame = ObjetivoHumanoidRootPart.CFrame * CFrame.new(0,0.5,i)
+      task.wait(0.01)
+    end
+  end
+  else
+    BangStatus = false
+    if MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+      MyHumanoidRootPart.AntiFallDamageBV:Destroy()
+    end
+    if currentTrack then
+      currentTrack:Stop()
+      currentTrack = nil
+    end
+    break
+  end
+  task.wait(0.01)
+end
+end
+end
+
+
+local FaceBangStatus = false
+
+local function FaceBang()
+if not FaceBangStatus then
+  FaceBangStatus = true
+  PlayScriptAnimation("Bang",true,1,0)
+for i = 1,9999999,1 do
+  if Objetivo then
+  local MyHumanoidRootPart = GetCharacterInstance("HumanoidRootPart")
+  local ObjetivoHead = GetOthersCharacterInstance(Objetivo,"Head")
+  if MyHumanoidRootPart and ObjetivoHead then
+    if not FaceBangStatus then
+    if MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+      MyHumanoidRootPart.AntiFallDamageBV:Destroy()
+    end
+    if currentTrack then
+      currentTrack:Stop()
+      currentTrack = nil
+    end
+    break
+    end
+    if not MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+    local AntiFallDamageBV = Instance.new("BodyVelocity")
+    AntiFallDamageBV.Velocity = Vector3.zero
+    AntiFallDamageBV.Name = "AntiFallDamageBV"
+    AntiFallDamageBV.MaxForce = VectorHuge
+    AntiFallDamageBV.Parent = MyHumanoidRootPart
+    end
+    for i = -2,-6,-1 do
+    MyHumanoidRootPart.CFrame = ObjetivoHead.CFrame * CFrame.new(0,1.5,i)
+    local Offset = ObjetivoHead.Position + Vector3.new(0,2,0)
+    MyHumanoidRootPart.CFrame = CFrame.lookAt(MyHumanoidRootPart.Position,Offset)
+    task.wait(0.01)
+    end
+    for i = -5,-2,1 do
+      MyHumanoidRootPart.CFrame = ObjetivoHead.CFrame * CFrame.new(0,1.5,i)
+      local Offset = ObjetivoHead.Position + Vector3.new(0,2,0)
+    MyHumanoidRootPart.CFrame = CFrame.lookAt(MyHumanoidRootPart.Position,Offset)
+      task.wait(0.01)
+    end
+  end
+  else
+    FaceBangStatus = false
+    if MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+      MyHumanoidRootPart.AntiFallDamageBV:Destroy()
+    end
+    if currentTrack then
+      currentTrack:Stop()
+      currentTrack = nil
+    end
+    break
+  end
+  task.wait(0.01)
+end
+end
+end
+
+local GetBangStatus = false
+
+local function GetBang()
+if not GetBangStatus then
+  GetBangStatus = true
+  PlayScriptAnimation("GetBang",true,1,0)
+for i = 1,9999999,1 do
+  if Objetivo then
+  local MyHumanoidRootPart = GetCharacterInstance("HumanoidRootPart")
+  local ObjetivoHumanoidRootPart = GetOthersCharacterInstance(Objetivo,"HumanoidRootPart")
+  if MyHumanoidRootPart and ObjetivoHumanoidRootPart then
+    if not GetBangStatus then
+    if MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+      MyHumanoidRootPart.AntiFallDamageBV:Destroy()
+    end
+    if currentTrack then
+      currentTrack:Stop()
+      currentTrack = nil
+    end
+    break
+    end
+    if not MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+    local AntiFallDamageBV = Instance.new("BodyVelocity")
+    AntiFallDamageBV.Velocity = Vector3.zero
+    AntiFallDamageBV.Name = "AntiFallDamageBV"
+    AntiFallDamageBV.MaxForce = VectorHuge
+    AntiFallDamageBV.Parent = MyHumanoidRootPart
+    end
+    for i = -4,-8,-1 do
+    MyHumanoidRootPart.CFrame =      ObjetivoHumanoidRootPart.CFrame * CFrame.new(0,-1,i) * CFrame.Angles(math.rad(90),0,0)
+    local Offset = ObjetivoHumanoidRootPart.Position + Vector3.new(0,50,0)
+    MyHumanoidRootPart.CFrame = CFrame.lookAt(MyHumanoidRootPart.Position,Offset)
+    task.wait(0.01)   
+    end
+    for i = -7,-4,1 do
+      MyHumanoidRootPart.CFrame = ObjetivoHumanoidRootPart.CFrame * CFrame.new(0,-1,i) * CFrame.Angles(math.rad(90),0,0)
+      local Offset = ObjetivoHumanoidRootPart.Position + Vector3.new(0,50,0)
+    MyHumanoidRootPart.CFrame = CFrame.lookAt(MyHumanoidRootPart.Position,Offset)
+      task.wait(0.01)
+    end
+  end
+  else
+    GetBangStatus = false
+    if MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+      MyHumanoidRootPart.AntiFallDamageBV:Destroy()
+    end
+    if currentTrack then
+      currentTrack:Stop()
+      currentTrack = nil
+    end
+    break
+  end
+  task.wait(0.01)
+end
+end
+end
+
+local GetBangTwoStatus = false
+
+local function GetBangTwo()
+if not GetBangTwoStatus then
+  GetBangTwoStatus = true
+  PlayScriptAnimation("GetBangTwo",true,0.2,0)
+for i = 1,9999999,1 do
+  if Objetivo then
+  local MyHumanoidRootPart = GetCharacterInstance("HumanoidRootPart")
+  local ObjetivoHumanoidRootPart = GetOthersCharacterInstance(Objetivo,"HumanoidRootPart")
+  if MyHumanoidRootPart and ObjetivoHumanoidRootPart then
+    if not GetBangTwoStatus then
+    if MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+      MyHumanoidRootPart.AntiFallDamageBV:Destroy()
+    end
+    if currentTrack then
+      currentTrack:Stop()
+      currentTrack = nil
+    end
+    break
+    end
+    if not MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+    local AntiFallDamageBV = Instance.new("BodyVelocity")
+    AntiFallDamageBV.Velocity = Vector3.zero
+    AntiFallDamageBV.Name = "AntiFallDamageBV"
+    AntiFallDamageBV.MaxForce = VectorHuge
+    AntiFallDamageBV.Parent = MyHumanoidRootPart
+    end
+    for i = -1,-8,-1 do
+    MyHumanoidRootPart.CFrame =      ObjetivoHumanoidRootPart.CFrame * CFrame.new(0,0,i)
+    task.wait(0.01)   
+    end
+    for i = -7,-1,1 do
+      MyHumanoidRootPart.CFrame = ObjetivoHumanoidRootPart.CFrame * CFrame.new(0,0,i)
+      task.wait(0.01)
+    end
+  end
+  else
+    GetBangTwoStatus = false
+    if MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+      MyHumanoidRootPart.AntiFallDamageBV:Destroy()
+    end
+    if currentTrack then
+      currentTrack:Stop()
+      currentTrack = nil
+    end
+    break
+  end
+  task.wait(0.01)
+end
+end
+end
+
+local SuckStatus = false
+
+local function Suck()
+if not SuckStatus then
+  SuckStatus = true
+  PlayScriptAnimation("Suck",true,1,0)
+for i = 1,9999999,1 do
+  if Objetivo then
+  local MyHumanoidRootPart = GetCharacterInstance("HumanoidRootPart")
+  local ObjetivoHumanoidRootPart = GetOthersCharacterInstance(Objetivo,"HumanoidRootPart")
+  if MyHumanoidRootPart and ObjetivoHumanoidRootPart then
+    if not SuckStatus then
+    if MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+      MyHumanoidRootPart.AntiFallDamageBV:Destroy()
+    end
+    if currentTrack then
+      currentTrack:Stop()
+      currentTrack = nil
+    end
+    break
+    end
+    if not MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+    local AntiFallDamageBV = Instance.new("BodyVelocity")
+    AntiFallDamageBV.Velocity = Vector3.zero
+    AntiFallDamageBV.Name = "AntiFallDamageBV"
+    AntiFallDamageBV.MaxForce = VectorHuge
+    AntiFallDamageBV.Parent = MyHumanoidRootPart
+    end
+    for i = -2,-6,-1 do
+    MyHumanoidRootPart.CFrame = ObjetivoHumanoidRootPart.CFrame * CFrame.new(0,0.7,i)
+    local Offset = ObjetivoHumanoidRootPart.Position
+    MyHumanoidRootPart.CFrame = CFrame.lookAt(MyHumanoidRootPart.Position,Offset)
+    task.wait(0.01)
+    end
+    for i = -5,-2,1 do
+      MyHumanoidRootPart.CFrame = ObjetivoHumanoidRootPart.CFrame * CFrame.new(0,0.7,i)
+      local Offset = ObjetivoHumanoidRootPart.Position
+    MyHumanoidRootPart.CFrame = CFrame.lookAt(MyHumanoidRootPart.Position,Offset)
+      task.wait(0.01)
+    end
+  end
+  else
+    SuckStatus = false
+    if MyHumanoidRootPart:FindFirstChild("AntiFallDamageBV") then
+      MyHumanoidRootPart.AntiFallDamageBV:Destroy()
+    end
+    if currentTrack then
+      currentTrack:Stop()
+      currentTrack = nil
+    end
+    break
+  end
+  task.wait(0.01)
+end
+end
+end
+
+
+local Window = Library:CreateWindow({
+    Name = "Admin Panel",
+    Icon = 90692784970350,
+    Theme = "neon_red",
+    Intro = true,
+    AnimationIntro = 0,
+    DragImage = 127271155083726
+})
+
+
+local PrincipalTab = Window:CreateTab("Troll")
+local PrincipalSection = PrincipalTab:CreateSection("Options")
+
+PrincipalTab:CreateInput({
+    Name = "Nombre del Jugador Objetivo",
+    PlaceholderText = "Escribe un nombre...",
+    Callback = function(text)
+      local SelectedPlayer = GetPlayerFromPartialName(text)
+      if SelectedPlayer then
+        Objetivo = SelectedPlayer
+        Notify("Selector de jugadores","Jugador Seleccionado: "..SelectedPlayer.Name,3)
+      else
+        Objetivo = nil
+        Notify("Selector de jugadores","No se a podido encontrar al jugador",3)
+      end
+    end
+})
+
+--- Botón que ejecuta script externo
+FlingButton = PrincipalTab:CreateButton({
+    Name = "Fling",
+    Callback = function()
+        Fling()
+if Objetivo then     
+  Notify("Fling","Haciendo fling a: "..Objetivo.Name,3)
+end
+end
+})
+
+TeleportButton = PrincipalTab:CreateButton({
+    Name = "Teleport",
+    Callback = function()
+        Teleport()
+if Objetivo then     
+  Notify("Teleport","Te Teletransportaste a: "..Objetivo.Name,1.5)
+end
+end
+})
+
+
+PrincipalTab:CreateToggle({
+    Name = "Bang",
+    CurrentValue = false, --- Valor inicial
+    Callback = function(state)
+        if state then
+            Bang()
+        else
+            BangStatus = state
+        end
+    end
+})
+
+PrincipalTab:CreateToggle({
+    Name = "FaceBang",
+    CurrentValue = false, --- Valor inicial
+    Callback = function(state)
+        if state then
+            FaceBang()
+        else
+            FaceBangStatus = state
+        end
+    end
+})
+
+PrincipalTab:CreateToggle({
+    Name = "GetBang1",
+    CurrentValue = false, --- Valor inicial
+    Callback = function(state)
+        if state then
+            GetBang()
+        else
+            GetBangStatus = state
+        end
+    end
+})
+
+PrincipalTab:CreateToggle({
+    Name = "GetBang2",
+    CurrentValue = false, --- Valor inicial
+    Callback = function(state)
+        if state then
+            GetBangTwo()
+        else
+            GetBangTwoStatus = state
+        end
+    end
+})
+
+PrincipalTab:CreateToggle({
+    Name = "Suck",
+    CurrentValue = false, --- Valor inicial
+    Callback = function(state)
+        if state then
+            Suck()
+        else
+            SuckStatus = state
+        end
+    end
+})
